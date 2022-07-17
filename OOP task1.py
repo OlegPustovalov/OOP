@@ -14,9 +14,9 @@ class Student:
         else:
             return 'Ошибка'
     def __str__(self):
-         res = f'Студент \nИмя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: self._av_grades()' \
+         res = f'Студент \nИмя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {self._av_grades}' \
                f'\nКурсы в процессе изучения: {self.courses_in_progress}' \
-               f'\nЗавершенные курсы: {self.finished_courses}'
+               f'\nЗавершенные курсы: {self.finished_courses} \nОценки {self.grades}:'
          return res
  
 class Mentor:
@@ -27,10 +27,10 @@ class Mentor:
         self.courses_in_progress = []
         self._av_grades = {}
         self.grades = {}
-class Lecturer(Mentor):
+class Lecturer(Mentor):     
     def __str__(self):
-        res = f'Лектор \nИмя: {self.name} \nФамилия: {self.surname} \nЗакрепленные курсы: {self.courses_attached}'
-        #\nСредняя оценка за лекции: {self._avg_grade()}
+        res = f'Лектор \nИмя: {self.name} \nФамилия: {self.surname} \nЗакрепленные курсы: {self.courses_attached}'\
+              f'\nСредняя оценка за лекции: {self._av_grades}'
         return res
 class Reviewer(Mentor):
 # метод Reviewer выставляет оценку студенту
@@ -48,27 +48,36 @@ class Reviewer(Mentor):
         
 student_1 = Student('Александр', 'Соболев', 'male')
 student_1.courses_in_progress += ['Python','Спартак']
-student_1._av_grades['Python']=10
 student_1.finished_courses += ['Крылья Советов']
+student_1.grades['Python']=10
+student_1.grades['Спартак']=8
+student_1._av_grades['Python']=9
+
 student_2 = Student('Роман', 'Зобнин', 'male')
 student_2.courses_in_progress += ['Git', 'Python','Спартак']
 student_2.finished_courses += ['Динамо']
-student_2._av_grades['Git']=9
+student_2.grades['Python']=9
+student_2.grades['Спартак']=3
+student_2._av_grades['Git']=8
 
 reviewer_1 = Reviewer('Олег','Романцев')
 reviewer_1.courses_attached += ['Git', 'Спартак']
 reviewer_2 = Reviewer('Доменико','Тедеско')
 reviewer_2.courses_attached += ['Python', 'Лейпциг']
-reviewer_1.rate_hw(student_1, 'Python', 10)
-reviewer_1.rate_hw(student_2, 'Python', 10)
-reviewer_2.rate_hw(student_1, 'Python', 9)
-reviewer_2.rate_hw(student_1, 'Python', 9)
+
+
 
 lektor_1 = Lecturer('Андрей','Тихонов')
 lektor_1.courses_attached += ['Git', 'Python','Спартак']
+lektor_1._av_grades['Git']=8
 lektor_2 = Lecturer('Валерий','Карпин')
 lektor_2.courses_attached += ['Python','Спартак','Ростов']
-student_1.grades['Python']=10
+lektor_2._av_grades['Python']=7
+
+#reviewer_1.rate_hw(student_1, 'Python', 10)
+#reviewer_1.rate_hw(student_2, 'Python', 10)
+#reviewer_2.rate_hw(student_1, 'Python', 9)
+#reviewer_2.rate_hw(student_2, 'Python', 8)
 #student_1.rate_hw(lektor_1,'Python',9)
 #student_1.rate_hw(lektor_2,'Python',9)
 
