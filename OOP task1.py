@@ -8,11 +8,26 @@ class Student:
         self.courses_in_progress = []
         self.grades = {}
 # метод студент выставляет оценку лектору
-    def rate_hw(self, lecturer, course, grade):
-        if isinstance(lecturer, Lecturer) and course in self.courses_in_progress and course in lecturer.courses_attached:
-                lecturer.grades[course] += [grade]
+    def rate_hw(self, lector, course, grade):
+        if isinstance(lector, Lecturer) and course in self.courses_in_progress and course in lector.courses_attached:         
+            if course in lector.grades:
+                lector.grades[course] += [grade]
+            else:        
+                lector.grades[course] = [grade]
         else:
-            return 'Ошибка'
+            print('Ошибка')
+    def comp(self,student_other,course):
+        av_grades1 = 0
+        av_grades2 = 0
+        if isinstance(student_other, Student) and course in self.courses_in_progress and course in student_other.courses_in_progress:
+            av_grades1 = self._av_grades[course]
+            av_grades2 = student_other._av_grades[course]
+            if  av_grades1 > av_grades2:
+                print (self.surname,' круче !') 
+            elif av_grades1 == av_grades2:
+                print (' боевая ничья !') 
+            else:
+                print (student_other.surname,' круче !') 
     def __str__(self):
          res = f'Студент \nИмя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {self._av_grades}' \
                f'\nКурсы в процессе изучения: {self.courses_in_progress}' \
@@ -24,68 +39,74 @@ class Mentor:
         self.name = name
         self.surname = surname
         self.courses_attached = []
-        self.courses_in_progress = []
-        self._av_grades = {}
+              
+class Lecturer(Mentor):
+#добавление к инициализации родительского класса grades,_av_grades через super()
+    def __init__(self, name, surname):
+        super().__init__(name, surname)
         self.grades = {}
-class Lecturer(Mentor):     
+        self._av_grades = {}     
     def __str__(self):
         res = f'Лектор \nИмя: {self.name} \nФамилия: {self.surname} \nЗакрепленные курсы: {self.courses_attached}'\
-              f'\nСредняя оценка за лекции: {self._av_grades}'
+              f'\nСредняя оценка за лекции: {self._av_grades} \nОценки {self.grades}:'
         return res
+    
+
 class Reviewer(Mentor):
-# метод Reviewer выставляет оценку студенту
+# метод reviewer.rate_hw выставляет оценку студенту
     def rate_hw(self, student, course, grade):
-        if isinstance(student, Student) and course in self.courses_attached and course in student.courses_in_progress:
+        if isinstance(student, Student) and course in student.courses_in_progress and course in self.courses_attached:
             if course in student.grades:
                 student.grades[course] += [grade]
             else:
                 student.grades[course] = [grade]
         else:
-            return 'Ошибка'
+            print('Ошибка')
     def __str__(self):
         res = f'Ревьюер \nИмя: {self.name} \nФамилия: {self.surname} \nЗакрепленные курсы: {self.courses_attached}'
         return res
-        
+#экземпляры класса студент        
 student_1 = Student('Александр', 'Соболев', 'male')
 student_1.courses_in_progress += ['Python','Спартак']
 student_1.finished_courses += ['Крылья Советов']
-student_1.grades['Python']=10
-student_1.grades['Спартак']=8
 student_1._av_grades['Python']=9
-
 student_2 = Student('Роман', 'Зобнин', 'male')
 student_2.courses_in_progress += ['Git', 'Python','Спартак']
 student_2.finished_courses += ['Динамо']
-student_2.grades['Python']=9
-student_2.grades['Спартак']=3
-student_2._av_grades['Git']=8
-
+student_2._av_grades['Python']=8
+#экземпляры класса ревьюэр
 reviewer_1 = Reviewer('Олег','Романцев')
-reviewer_1.courses_attached += ['Git', 'Спартак']
+reviewer_1.courses_attached += ['Python', 'Спартак']
 reviewer_2 = Reviewer('Доменико','Тедеско')
-reviewer_2.courses_attached += ['Python', 'Лейпциг']
-
-
-
+reviewer_2.courses_attached += ['Python', 'Git']
+#выставление оценок студентам
+reviewer_1.rate_hw(student_1, 'Python', 9)
+reviewer_1.rate_hw(student_1, 'Python', 10)
+reviewer_1.rate_hw(student_1, 'Спартак', 7)
+reviewer_2.rate_hw(student_1, 'Python', 9)
+reviewer_2.rate_hw(student_2, 'Git', 8)
+#экземпляры класса лекторы
 lektor_1 = Lecturer('Андрей','Тихонов')
-lektor_1.courses_attached += ['Git', 'Python','Спартак']
-lektor_1._av_grades['Git']=8
+lektor_1.courses_attached += ['Python','Спартак']
+lektor_1._av_grades['Python']=8
 lektor_2 = Lecturer('Валерий','Карпин')
 lektor_2.courses_attached += ['Python','Спартак','Ростов']
 lektor_2._av_grades['Python']=7
-
-#reviewer_1.rate_hw(student_1, 'Python', 10)
-#reviewer_1.rate_hw(student_2, 'Python', 10)
-#reviewer_2.rate_hw(student_1, 'Python', 9)
-#reviewer_2.rate_hw(student_2, 'Python', 8)
-#student_1.rate_hw(lektor_1,'Python',9)
-#student_1.rate_hw(lektor_2,'Python',9)
-
+# выставление оценок лекторам
+student_2.rate_hw(lektor_1, 'Python', 10)
+student_1.rate_hw(lektor_1,'Python', 8)
+student_1.rate_hw(lektor_1,'Python', 5)
+student_1.rate_hw(lektor_1,'Спартак', 5)
+student_1.rate_hw(lektor_2,'Python', 7)
+student_1.rate_hw(lektor_2,'Спартак', 8)
+student_1.rate_hw(lektor_2,'Спартак', 10)
+# печать магический метод _str_
 print(student_1)
 print(student_2)
 print(lektor_1)
 print(lektor_2)
 print(reviewer_1)
 print(reviewer_2)
-
+#сравнение студентов по средним оценкам по определенному предмету
+student_1.comp(student_2,'Python')
 
